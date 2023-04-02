@@ -1,0 +1,7 @@
+# dockerイメージに含まないディレクトリ名及びファイル名
+.git
+.gitignore
+.vscode
+venv
+**/__pycache__
+shell_scripts/*

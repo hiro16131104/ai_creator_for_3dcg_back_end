@@ -1,0 +1,6 @@
+# git管理から除外するファイル
+/.vscode
+/venv/*
+/shell_scripts/*
+__pycache__
+/secret.json

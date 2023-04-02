@@ -1,0 +1,54 @@
+{
+    "comment": "Flaskアプリの設定ファイル",
+    "environment": {
+        "comment": "本番環境は'production'、開発環境は'development'",
+        "value": "development"
+    },
+    "config": {
+        "comment": "Flaskインスタンスのconfig変数に代入する値",
+        "production": {
+            "comment": "'max_content_length'の単位はバイト",
+            "debug": false,
+            "testing": false,
+            "jsonAsAscii": false,
+            "maxContentLength": 5242880
+        },
+        "development": {
+            "debug": true,
+            "testing": false,
+            "jsonAsAscii": false,
+            "maxContentLength": 5242880
+        }
+    },
+    "limit": {
+        "comment": [
+            "リクエスト頻度を制限するための値",
+            "`100 per minute`は1分間に100回までリクエストできるという意味"
+        ],
+        "production": "30 per minute",
+        "development": "100 per minute"
+    },
+    "filePath": {
+        "secret": "./secret.json"
+    },
+    "chatGpt": {
+        "sendingMessage": {
+            "comment": "ChatGPTに送信するメッセージに関する設定",
+            "maxContentLength": 1000,
+            "maxCount": 50,
+            "retryCount": 2
+        },
+        "receivingMessage": {
+            "comment": "ChatGPTから受信するメッセージに関する設定",
+            "importableModules": [
+                "THREE"
+            ],
+            "words": [
+                {
+                    "NG": "THREE.Geometry",
+                    "OK": "THREE.BufferGeometry"
+                }
+            ]
+        }
+    }
+}
