@@ -4,3 +4,4 @@
 /shell_scripts/*
 __pycache__
 /secret.json
+.DS_Store
