@@ -24,7 +24,7 @@ AppSetting.limit_request(app, PATH_CONFIG_FILE)
 # 接続テスト用
 @app.route("/", methods=["GET"])
 def index() -> str:
-    return "この接続テストOK。このURLは有効です。"
+    return "接続テストOK。このURLは有効です。"
 
 
 # ChatGPTに最初のメッセージを送信する
@@ -58,8 +58,8 @@ def send_first_message() -> Response:
         APP_CONFIG["chatGpt"]["sendingMessage"]["maxContentLength"]
     )
     # ChatGPTにメッセージを送信する
-    chat_gpt.send_message(0.0)
-    
+    chat_gpt.send_message(1.0)
+
     for i in range(RETRY_COUNT):
         # ChatGPTからの返答に使用できないモジュールやクラス、無効なURLが含まれている場合、
         # 追加のメッセージを作成する
@@ -69,7 +69,7 @@ def send_first_message() -> Response:
             # ChatGPTに送信するメッセージを設定する
             chat_gpt.add_message_user(message_user)
             # ChatGPTにメッセージを送信する
-            chat_gpt.send_message(0.0)
+            chat_gpt.send_message(1.0)
         else:
             break
 
@@ -120,7 +120,7 @@ def send_message() -> Response:
         f"{content}\nただし、前述したコーディングルールは遵守してください。",
         setting["maxContentLength"]
     )
-    chat_gpt.send_message(0.0, setting["maxCount"])
+    chat_gpt.send_message(1.0, setting["maxCount"])
     # ChatGPTとのやりとりの最後の2件をテーブルに保存する
     TableMessage.insert_records(user_id, chat_gpt.messages[-2:])
 
@@ -138,7 +138,7 @@ def send_message() -> Response:
             chat_gpt.compress_message()
             chat_gpt.add_message_user(message_user)
             # ChatGPTにメッセージを送信する
-            chat_gpt.send_message(0.0)
+            chat_gpt.send_message(1.0)
             # ChatGPTとのやりとりの最後の2件をテーブルに保存する
             TableMessage.insert_records(user_id, chat_gpt.messages[-2:])
         else:
@@ -281,7 +281,7 @@ def error_handler_other(error) -> tuple[Response, int]:
 
 
 # 使用できないモジュールやクラス、無効なURLが含まれている場合、メッセージを作成する
-def make_additional_message(chat_gpt: ChatGpt)-> str:
+def make_additional_message(chat_gpt: ChatGpt) -> str:
     IMPORTABLE_MODULES = APP_CONFIG["chatGpt"]["receivingMessage"]["importableModules"]
     WORDS = APP_CONFIG["chatGpt"]["receivingMessage"]["words"]
     # importされているモジュールを抽出する
@@ -290,7 +290,7 @@ def make_additional_message(chat_gpt: ChatGpt)-> str:
     ng_words = chat_gpt.check_ng_words(list(map(lambda x: x["NG"], WORDS)))
     # 無効なURLを抽出する
     invalid_urls = list(filter(
-        lambda x: not Utility.validate_url(x), 
+        lambda x: not Utility.validate_url(x),
         chat_gpt.get_urls()
     ))
     message_user = ""
@@ -320,7 +320,7 @@ def make_additional_message(chat_gpt: ChatGpt)-> str:
 
         # 無効なURLが含まれている場合
         if len(invalid_urls) > 0:
-            message_user += f"・テクスチャは使用しない。"
+            message_user += "・テクスチャは使用しない。"
 
     return message_user
 
