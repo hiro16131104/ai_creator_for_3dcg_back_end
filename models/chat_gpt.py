@@ -6,6 +6,9 @@ from .utility import Utility
 
 # ChatGPTとやり取りするためのクラス
 class ChatGpt:
+    # MODEL = "gpt-3.5-turbo"
+    MODEL = "gpt-4-1106-preview"
+
     def __init__(self, api_key: str) -> None:
         openai.api_key = api_key
         self.messages: list[dict[str, str]] = []
@@ -37,19 +40,13 @@ class ChatGpt:
 
         # messagesに格納する
         for items in objects:
-            self.messages.append(
-                {"role": items["role"], "content": items["content"]}
-            )
+            self.messages.append({"role": items["role"], "content": items["content"]})
 
     # ユーザーのメッセージを追加する
-    def add_message_user(
-            self, content: str, max_content_length: int = 0
-    ) -> None:
+    def add_message_user(self, content: str, max_content_length: int = 0) -> None:
         # contentの長さがmax_content_lengthを超えている場合はエラーを発生させる
         if max_content_length > 0 and len(content) > max_content_length:
-            raise ValueError(
-                f"引数contentの長さは{max_content_length}文字以下にしてください。"
-            )
+            raise ValueError(f"引数contentの長さは{max_content_length}文字以下にしてください。")
         self.messages.append({"role": "user", "content": content})
 
     # メッセージを圧縮する
@@ -59,9 +56,9 @@ class ChatGpt:
         role_last = self.messages[-1]["role"]
 
         if not (
-            role_first == "system" and
-            role_second == "user" and
-            role_last == "assistant"
+            role_first == "system"
+            and role_second == "user"
+            and role_last == "assistant"
         ):
             raise ValueError("messagesの順番が不正です。")
 
@@ -81,14 +78,10 @@ class ChatGpt:
         if temperature < 0.0 or temperature > 1.0:
             raise ValueError("引数temperatureは0.0以上1.0以下の値を指定してください。")
         elif max_count > 0 and user_message_count > max_count:
-            raise ValueError(
-                f"ユーザーのメッセージの数は{max_count}以下にしてください。"
-            )
+            raise ValueError(f"ユーザーのメッセージの数は{max_count}以下にしてください。")
         # APIへのリクエストを送信する
         response = openai.ChatCompletion.create(
-            model="gpt-3.5-turbo",
-            temperature=temperature,
-            messages=self.messages
+            model=self.MODEL, temperature=temperature, messages=self.messages
         )
         # ChatGPTからの返答をmessagesに追加する
         self.messages.append(
@@ -108,9 +101,9 @@ class ChatGpt:
             else r"```\n(.*?)\n```"
         )
         # javascriptのソースコードを抽出する
-        source_code = re.search(
-            pattern, self.get_content_assistant(), re.DOTALL
-        ).group(1)
+        source_code = re.search(pattern, self.get_content_assistant(), re.DOTALL).group(
+            1
+        )
 
         return source_code
 
@@ -120,10 +113,7 @@ class ChatGpt:
         source_code = self.get_source_code_javascript_with_comment()
         # コメントを削除する
         source_code = re.sub(
-            r"(?<!:)//.*?$|\/\*.*?\*\/",
-            "",
-            source_code,
-            flags=re.DOTALL | re.MULTILINE
+            r"(?<!:)//.*?$|\/\*.*?\*\/", "", source_code, flags=re.DOTALL | re.MULTILINE
         )
         # 改行コードを削除する
         source_code = source_code.replace("\n", "")
@@ -145,14 +135,14 @@ class ChatGpt:
                 break
 
             # importとfromの間を取得する
-            import_module = sentence[7:sentence.find("from")].strip()
+            import_module = sentence[7 : sentence.find("from")].strip()
             # "*"、" as "、"{"、"}"を削除し、全ての空白を削除する
             import_module = Utility.remove_chars(
-                import_module, ["*", " as ", "{", "}", " "])
+                import_module, ["*", " as ", "{", "}", " "]
+            )
             # ","が含まれる場合は","で分割し、ng_import_modulesに追加する
             import_modules.extend(
-                import_module.split(",") if "," in import_module else [
-                    import_module]
+                import_module.split(",") if "," in import_module else [import_module]
             )
         return import_modules
 
