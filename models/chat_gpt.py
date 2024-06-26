@@ -6,8 +6,7 @@ from .utility import Utility
 
 # ChatGPTとやり取りするためのクラス
 class ChatGpt:
-    # MODEL = "gpt-3.5-turbo"
-    MODEL = "gpt-4-1106-preview"
+    MODEL = "gpt-4o"
 
     def __init__(self, api_key: str) -> None:
         openai.api_key = api_key
